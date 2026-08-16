@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuizSpark Adventure | Online Quiz Game for Students</title>
+  <meta name="description" content="An interactive, age-adaptive educational quiz game for children and students spanning Math, Science, History, Geography, Social Science, and General Knowledge.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/game.css">
+</head>
+<body>
+  <!-- Confetti Layer for Celebrations -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Application Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-logo" id="nav-home-logo">
+        <span class="logo-icon">⚡</span>
+        <div class="logo-text">
+          <span class="logo-title">QuizSpark</span>
+          <span class="logo-subtitle">Educational Adventure</span>
+        </div>
+      </div>
+
+      <nav class="app-nav">
+        <button class="nav-btn" data-target="home">🏠 Home</button>
+        <button class="nav-btn" data-target="categories">📚 Subjects</button>
+        <button class="nav-btn" data-target="levels">🗺️ Levels</button>
+        <button class="nav-btn" data-target="admin">✏️ Question Bank</button>
+        <button class="nav-btn" data-target="leaderboard">🏆 Leaderboard</button>
+      </nav>
+
+      <div class="header-user-actions">
+        <button id="sound-toggle-btn" class="icon-btn" title="Toggle Sound">
+          <span class="icon">🔊</span>
+        </button>
+        <div class="user-profile-chip" id="nav-profile-chip" title="Click to edit player profile">
+          <span id="header-player-avatar" class="user-avatar">🚀</span>
+          <div class="user-info">
+            <span id="header-player-name" class="user-name">Alex</span>
+            <span id="header-player-age-badge" class="badge badge-kids">Junior (Age 9)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APPLICATION SCREENS -->
+  <main class="main-content">
+
+    <!-- 1. HOME SCREEN -->
+    <section id="view-home" class="screen-view active-view">
+      <div class="hero-card glass-card">
+        <div class="hero-content">
+          <span class="pill-tag">✨ Interactive Student Quiz</span>
+          <h1 class="hero-title">Learn, Play & Conquer Quiz Levels!</h1>
+          <p class="hero-desc">
+            Test your knowledge in Mathematics, Science, History, Social Science, Geography and General Knowledge. Adaptive difficulty designed specifically for kids & older students!
+          </p>
+          <div class="hero-actions">
+            <button id="btn-home-play" class="btn btn-primary btn-lg">🎮 Play Now ▶</button>
+            <button id="btn-home-setup" class="btn btn-outline btn-lg">⚙️ Player Setup</button>
+          </div>
+        </div>
+        <div class="hero-mascot-container">
+          <img src="assets/images/quiz_winner_mascot.jpg" alt="Quiz Champion Mascot" class="hero-mascot-img">
+        </div>
+      </div>
+
+      <!-- Featured Subjects Preview -->
+      <div class="section-title-row">
+        <h2>Explore Subjects</h2>
+        <button class="btn-link" data-target="categories">View All Subjects →</button>
+      </div>
+
+      <div class="subject-grid">
+        <div class="subject-card card-math" data-category="Mathematics">
+          <div class="subj-icon">🔢</div>
+          <h3>Mathematics</h3>
+          <p>Counting, Addition, Word Problems & Algebra</p>
+        </div>
+        <div class="subject-card card-science" data-category="Science">
+          <div class="subj-icon">🧪</div>
+          <h3>Science</h3>
+          <p>Plants, Animals, Planets & Chemistry</p>
+        </div>
+        <div class="subject-card card-history" data-category="History">
+          <div class="subj-icon">🏛️</div>
+          <h3>History</h3>
+          <p>Ancient Pharaohs, Presidents & World Events</p>
+        </div>
+        <div class="subject-card card-geography" data-category="Geography">
+          <div class="subj-icon">🌍</div>
+          <h3>Geography</h3>
+          <p>Continents, Oceans, Capitals & Maps</p>
+        </div>
+        <div class="subject-card card-social" data-category="Social Science">
+          <div class="subj-icon">🤝</div>
+          <h3>Social Science</h3>
+          <p>Civics, Community Helpers & Cultures</p>
+        </div>
+        <div class="subject-card card-gk" data-category="General Knowledge">
+          <div class="subj-icon">💡</div>
+          <h3>General Knowledge</h3>
+          <p>Fun Facts, Riddles & Trivia Records</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PLAYER SETUP SCREEN -->
+    <section id="view-setup" class="screen-view d-none">
+      <div class="setup-container glass-card">
+        <div class="form-header">
+          <h2>👤 Player Setup & Profile</h2>
+          <p>Customize your profile to receive age-appropriate quiz questions!</p>
+        </div>
+
+        <form id="player-setup-form" class="setup-form">
+          <div class="form-group">
+            <label for="input-player-name">Student / Player Name <span class="req">*</span></label>
+            <input type="text" id="input-player-name" class="form-control" placeholder="Enter your name" required maxLength="30">
+          </div>
+
+          <div class="form-group">
+            <label for="input-player-age">Student Age <span class="req">*</span></label>
+            <input type="number" id="input-player-age" class="form-control" min="4" max="18" placeholder="e.g. 9" required>
+            <small class="form-hint">Used to automatically customize difficulty & language.</small>
+          </div>
+
+          <!-- Dynamic Age Mode Info Box -->
+          <div id="age-mode-info-box" class="info-box box-kids">
+            <span class="info-icon">👶</span>
+            <div class="info-text">
+              <strong id="age-mode-title">Junior Explorer Mode (Age ≤ 10)</strong>
+              <p id="age-mode-desc">Questions are simple, fun, easy to understand, and designed for children!</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Choose Your Explorer Avatar</label>
+            <div class="avatar-grid">
+              <label class="avatar-option"><input type="radio" name="avatar" value="🚀" checked><span>🚀 Space</span></label>
+              <label class="avatar-option"><input type="radio" name="avatar" value="🎓"><span>🎓 Scholar</span></label>
+              <label class="avatar-option"><input type="radio" name="avatar" value="🦖"><span>🦖 Dino</span></label>
+              <label class="avatar-option"><input type="radio" name="avatar" value="🧙‍♂️"><span>🧙 Magic</span></label>
+              <label class="avatar-option"><input type="radio" name="avatar" value="🔬"><span>🔬 Scientist</span></label>
+              <label class="avatar-option"><input type="radio" name="avatar" value="🥷"><span>🥷 Ninja</span></label>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-block">Save Profile & Start ▶</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 3. CATEGORIES SCREEN -->
+    <section id="view-categories" class="screen-view d-none">
+      <div class="section-title-row">
+        <div>
+          <h2>Choose a Subject Category</h2>
+          <p class="subtitle">Play a targeted quiz in your favorite topic!</p>
+        </div>
+      </div>
+      <div id="categories-grid" class="subject-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- 4. LEVEL SELECTION SCREEN -->
+    <section id="view-levels" class="screen-view d-none">
+      <div class="section-title-row">
+        <div>
+          <h2>🗺️ Quiz Levels Journey</h2>
+          <p class="subtitle">Complete each level with high scores to unlock the next challenge!</p>
+        </div>
+      </div>
+
+      <div id="level-grid" class="level-grid-container">
+        <!-- Level Cards rendered dynamically by ui.js -->
+      </div>
+    </section>
+
+    <!-- 5. QUIZ GAMEPLAY SCREEN -->
+    <section id="view-gameplay" class="screen-view d-none">
+      <div class="game-hud-bar">
+        <div class="hud-item">
+          <span class="hud-label">LEVEL</span>
+          <span id="game-hud-level" class="hud-val">1</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">SUBJECT</span>
+          <span id="game-hud-subject" class="hud-val">Mixed</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">QUESTION</span>
+          <span id="game-hud-qcount" class="hud-val">1 / 5</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">STREAK</span>
+          <span id="game-hud-streak" class="hud-val streak-badge">🔥 0</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">SCORE</span>
+          <span id="game-hud-score" class="hud-val score-counter">0</span>
+        </div>
+      </div>
+
+      <!-- Question Card Container -->
+      <div class="gameplay-card glass-card">
+        <!-- Timer Bar & Clock Ring -->
+        <div class="timer-wrapper">
+          <div class="timer-radial-container">
+            <span id="timer-clock-text" class="timer-clock-text">15</span>
+          </div>
+          <div class="timer-bar-bg">
+            <div id="timer-bar-fill" class="timer-bar-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Lifelines Bar -->
+        <div class="lifelines-row">
+          <button id="lifeline-5050" class="btn-lifeline" title="Remove 2 wrong options">
+            <span>⚡ 50:50 Lifeline</span>
+          </button>
+          <button id="lifeline-time" class="btn-lifeline" title="Add 10 extra seconds">
+            <span>⏱️ +10s Time Freeze</span>
+          </button>
+          <button id="btn-toggle-hint" class="btn-lifeline btn-hint-toggle" title="View question hint">
+            <span>💡 Show Hint</span>
+          </button>
+        </div>
+
+        <!-- Hint Box -->
+        <div id="question-hint-box" class="hint-box d-none">
+          <span class="hint-title">💡 Hint:</span> <span id="question-hint-text">...</span>
+        </div>
+
+        <!-- Question Text -->
+        <div class="question-box">
+          <h2 id="gameplay-question-text" class="gameplay-question">
+            Loading question...
+          </h2>
+        </div>
+
+        <!-- 4 Multiple Choice Option Buttons -->
+        <div id="options-container" class="options-container">
+          <button class="btn-option" data-index="0"><span class="opt-key">A</span><span class="opt-text">Option 1</span></button>
+          <button class="btn-option" data-index="1"><span class="opt-key">B</span><span class="opt-text">Option 2</span></button>
+          <button class="btn-option" data-index="2"><span class="opt-key">C</span><span class="opt-text">Option 3</span></button>
+          <button class="btn-option" data-index="3"><span class="opt-key">D</span><span class="opt-text">Option 4</span></button>
+        </div>
+
+        <!-- Feedback & Explanation Banner -->
+        <div id="game-feedback-banner" class="feedback-banner d-none">
+          <div class="feedback-status-row">
+            <span id="feedback-icon" class="fb-icon">✅</span>
+            <span id="feedback-title" class="fb-title">Correct!</span>
+          </div>
+          <p id="feedback-explanation" class="fb-explanation">Explanation text goes here...</p>
+        </div>
+
+        <!-- Next Question Button -->
+        <div class="game-footer-actions">
+          <button id="btn-next-question" class="btn btn-primary btn-lg d-none">Next Question ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. RESULT SCREEN -->
+    <section id="view-result" class="screen-view d-none">
+      <div class="result-card glass-card">
+        <div class="result-mascot">
+          <img src="assets/images/quiz_winner_mascot.jpg" alt="Winner Mascot" class="result-img">
+        </div>
+
+        <div id="result-congratulations" class="result-title-group">
+          <h1 id="result-title">Congratulations! 🎉</h1>
+          <p id="result-performance-msg" class="result-msg">Amazing work! Keep going — you can do even better!</p>
+        </div>
+
+        <!-- Star Rating Display -->
+        <div id="result-stars-row" class="stars-display-row">
+          <span class="result-star star-1">⭐</span>
+          <span class="result-star star-2">⭐</span>
+          <span class="result-star star-3">⭐</span>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="result-metrics-grid">
+          <div class="metric-box">
+            <span class="metric-val" id="res-score">0</span>
+            <span class="metric-label">Final Score</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val" id="res-accuracy">0%</span>
+            <span class="metric-label">Accuracy</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val" id="res-correct">0 / 0</span>
+            <span class="metric-label">Correct Answers</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val" id="res-streak">0</span>
+            <span class="metric-label">Max Streak</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="result-actions-row">
+          <button id="btn-res-next-level" class="btn btn-primary">Next Level ➔</button>
+          <button id="btn-res-play-again" class="btn btn-secondary">Play Again 🔄</button>
+          <button id="btn-res-review" class="btn btn-outline">Review Answers 📝</button>
+          <button id="btn-res-home" class="btn btn-outline">Go Home 🏠</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. ANSWER REVIEW SCREEN / MODAL -->
+    <section id="view-answer-review" class="screen-view d-none">
+      <div class="section-title-row">
+        <div>
+          <h2>📝 Detailed Answer Breakdown</h2>
+          <p class="subtitle">Review your answers and learn from explanations!</p>
+        </div>
+        <button id="btn-back-from-review" class="btn btn-secondary">← Back to Results</button>
+      </div>
+
+      <div id="review-questions-container" class="review-container">
+        <!-- Rendered by ui.js -->
+      </div>
+    </section>
+
+    <!-- 8. ADMIN / CREATE QUESTIONS SCREEN -->
+    <section id="view-admin" class="screen-view d-none">
+      <div class="section-title-row">
+        <div>
+          <h2>✏️ Question Bank & Creator Hub</h2>
+          <p class="subtitle">Search, filter, edit, or add custom quiz questions for students!</p>
+        </div>
+        <div class="admin-top-actions">
+          <button id="btn-toggle-add-q-form" class="btn btn-primary">+ Add New Question</button>
+          <button id="btn-reset-default-q" class="btn btn-outline btn-danger-outline">🔄 Reset Default Bank</button>
+        </div>
+      </div>
+
+      <!-- Add / Edit Question Form Collapsible -->
+      <div id="add-question-form-container" class="form-card glass-card d-none">
+        <h3 id="admin-form-title">➕ Create New Question</h3>
+        <form id="admin-question-form" class="admin-form">
+          <input type="hidden" id="q-form-id" value="">
+
+          <div class="form-group">
+            <label for="q-form-text">Question Text <span class="req">*</span></label>
+            <textarea id="q-form-text" class="form-control" rows="3" placeholder="Type question statement here..." required></textarea>
+          </div>
+
+          <div class="options-inputs-grid">
+            <div class="form-group">
+              <label for="q-opt-a">Option A <span class="req">*</span></label>
+              <div class="opt-input-wrapper">
+                <input type="radio" name="correct_opt" value="0" checked>
+                <input type="text" id="q-opt-a" class="form-control" placeholder="Option A text" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="q-opt-b">Option B <span class="req">*</span></label>
+              <div class="opt-input-wrapper">
+                <input type="radio" name="correct_opt" value="1">
+                <input type="text" id="q-opt-b" class="form-control" placeholder="Option B text" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="q-opt-c">Option C <span class="req">*</span></label>
+              <div class="opt-input-wrapper">
+                <input type="radio" name="correct_opt" value="2">
+                <input type="text" id="q-opt-c" class="form-control" placeholder="Option C text" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="q-opt-d">Option D <span class="req">*</span></label>
+              <div class="opt-input-wrapper">
+                <input type="radio" name="correct_opt" value="3">
+                <input type="text" id="q-opt-d" class="form-control" placeholder="Option D text" required>
+              </div>
+            </div>
+          </div>
+          <small class="form-hint">Select the radio button next to the correct answer choice.</small>
+
+          <div class="form-row-3">
+            <div class="form-group">
+              <label for="q-form-category">Subject Category</label>
+              <select id="q-form-category" class="form-control">
+                <option value="General Knowledge">General Knowledge</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="History">History</option>
+                <option value="Science">Science</option>
+                <option value="Social Science">Social Science</option>
+                <option value="Geography">Geography</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="q-form-difficulty">Difficulty</label>
+              <select id="q-form-difficulty" class="form-control">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+                <option value="expert">Expert</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="q-form-level">Quiz Level</label>
+              <select id="q-form-level" class="form-control">
+                <option value="1">Level 1 (Easy)</option>
+                <option value="2">Level 2 (Medium)</option>
+                <option value="3">Level 3 (Hard)</option>
+                <option value="4">Level 4 (Expert)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="q-form-age">Age Group</label>
+              <select id="q-form-age" class="form-control">
+                <option value="under10">Age ≤ 10 (Kids)</option>
+                <option value="over10">Age > 10 (Students)</option>
+                <option value="all">All Ages</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="q-form-timer">Timer Duration (Seconds)</label>
+              <select id="q-form-timer" class="form-control">
+                <option value="15">15 Seconds</option>
+                <option value="20">20 Seconds</option>
+                <option value="25">25 Seconds</option>
+                <option value="30">30 Seconds</option>
+                <option value="60">60 Seconds</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="q-form-hint">Hint (Optional)</label>
+            <input type="text" id="q-form-hint" class="form-control" placeholder="Short clue for student">
+          </div>
+
+          <div class="form-group">
+            <label for="q-form-explanation">Educational Explanation (Optional)</label>
+            <input type="text" id="q-form-explanation" class="form-control" placeholder="Explanation shown after answering">
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💾 Save Question</button>
+            <button type="button" id="btn-cancel-q-form" class="btn btn-secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Search & Filters Toolbar -->
+      <div class="filter-toolbar glass-card">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="admin-search-input" class="form-control" placeholder="Search question text or options...">
+        </div>
+
+        <div class="filters-row">
+          <div class="filter-item">
+            <label>Subject</label>
+            <select id="admin-filter-category" class="form-control">
+              <option value="all">All Subjects</option>
+              <option value="General Knowledge">General Knowledge</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="History">History</option>
+              <option value="Science">Science</option>
+              <option value="Social Science">Social Science</option>
+              <option value="Geography">Geography</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>Difficulty</label>
+            <select id="admin-filter-difficulty" class="form-control">
+              <option value="all">All Difficulties</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+              <option value="expert">Expert</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>Age Group</label>
+            <select id="admin-filter-age" class="form-control">
+              <option value="all">All Age Groups</option>
+              <option value="under10">Age ≤ 10</option>
+              <option value="over10">Age > 10</option>
+            </select>
+          </div>
+
+          <div class="filter-item">
+            <label>Level</label>
+            <select id="admin-filter-level" class="form-control">
+              <option value="all">All Levels</option>
+              <option value="1">Level 1</option>
+              <option value="2">Level 2</option>
+              <option value="3">Level 3</option>
+              <option value="4">Level 4</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Count & List Container -->
+      <div class="list-count-row">
+        <span id="admin-question-count" class="badge badge-primary">0 Questions</span>
+      </div>
+
+      <div id="admin-questions-list" class="admin-questions-list">
+        <!-- Rendered by ui.js -->
+      </div>
+    </section>
+
+    <!-- 9. LEADERBOARD SCREEN -->
+    <section id="view-leaderboard" class="screen-view d-none">
+      <div class="section-title-row">
+        <div>
+          <h2>🏆 Student High Scores & Statistics</h2>
+          <p class="subtitle">Check your progress history and achievement stats!</p>
+        </div>
+        <button id="btn-reset-all-data" class="btn btn-sm btn-danger-outline">⚠️ Reset All Data</button>
+      </div>
+
+      <div id="player-stats-summary" class="stats-grid">
+        <!-- Rendered by ui.js -->
+      </div>
+
+      <div class="leaderboard-section">
+        <h3>Recent Games & High Scores</h3>
+        <div id="leaderboard-history-list" class="leaderboard-list">
+          <!-- Rendered by ui.js -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>QuizSpark Adventure &copy; 2026 • Interactive Educational Quiz Game for Kids & Students</p>
+    </div>
+  </footer>
+
+  <!-- Scripts (Standard non-module bundle for 100% offline file:// compatibility) -->
+  <script src="js/quizspark-bundle.js"></script>
+</body>
+</html>
